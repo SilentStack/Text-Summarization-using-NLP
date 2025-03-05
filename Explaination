@@ -150,8 +150,5 @@ Some common applications of NLP include chatbots, sentiment analysis, and langua
 
 ---
 
-### **Next Steps**
-1. Try summarizing **your own text**.  
-2. Modify `num_sentences` to see different summary lengths.  
-3. Improve sentence scoring using **TF-IDF** or **BERT embeddings** (advanced methods).
+
 

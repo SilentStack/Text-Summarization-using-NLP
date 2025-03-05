@@ -1,0 +1,157 @@
+**Extractive Text Summarization Using NLP**
+
+### **Project Overview**
+This project extracts the most important sentences from a given text to create a summary.
+
+### **Concepts Covered:**
+1. **Tokenization** (Breaking text into sentences and words)
+2. **Stopwords Removal** (Filtering out common words like "the", "is")
+3. **Word Frequency Calculation** (Identifying important words)
+4. **Sentence Scoring** (Ranking sentences based on important words)
+5. **Selecting Top Sentences** (Picking the most relevant ones for the summary)
+
+---
+
+### **Line-by-Line Code Explanation**
+
+#### **Step 1: Import Required Libraries**
+```python
+import nltk  # Natural Language Toolkit for text processing
+import heapq  # Used for selecting the most important sentences
+import re  # Regular expressions for cleaning text
+from nltk.tokenize import sent_tokenize, word_tokenize  # Sentence and word tokenization
+from nltk.corpus import stopwords  # Stopwords (common words like 'the', 'is', etc.)
+```
+- `nltk` → A powerful library for NLP tasks (tokenization, stopword removal, etc.).  
+- `heapq` → A Python module for selecting **top-ranked** elements efficiently.  
+- `re` → A module for **text cleaning** (removing special characters, punctuation, etc.).  
+- `sent_tokenize()` → Splits text into sentences.  
+- `word_tokenize()` → Splits sentences into words.  
+- `stopwords` → Provides **a list of common words** to ignore (like "is", "the", "in").  
+
+---
+
+#### **Step 2: Download Required NLP Data**
+```python
+nltk.download('punkt')  # Download the sentence and word tokenizer model
+nltk.download('stopwords')  # Download stopwords for filtering out common words
+```
+- **`punkt`** → A pre-trained model that helps **split sentences and words** correctly.  
+- **`stopwords`** → A predefined list of common words (like "the", "and") that are **not useful for summarization**.  
+
+---
+
+#### **Step 3: Define the Extractive Summarization Function**
+```python
+def extractive_summarization(text, num_sentences=3):
+```
+- **Takes a text** as input.  
+- **Finds the most important sentences** and returns a summary.  
+- `num_sentences=3` → This sets **the number of sentences** to include in the summary (default is 3).  
+
+---
+
+#### **Step 4: Tokenizing Sentences**
+```python
+sentences = sent_tokenize(text)  # Splits text into a list of sentences
+```
+- `sent_tokenize()` **splits the text** into individual **sentences**.  
+
+---
+
+#### **Step 5: Initialize Data Structures**
+```python
+word_frequencies = {}  # Dictionary to store word frequencies
+stop_words = set(stopwords.words('english'))  # Get stopwords in English
+```
+- `word_frequencies = {}` → Creates a dictionary to store **how many times each word appears**.  
+- `stop_words = set(stopwords.words('english'))` → Loads common **English stopwords** into a set (e.g., "the", "is", "and").  
+
+---
+
+#### **Step 6: Process Each Sentence**
+```python
+for sentence in sentences:  
+    words = word_tokenize(re.sub(r'[^a-zA-Z]', ' ', sentence.lower()))  
+    for word in words:  
+        if word not in stop_words:  
+            word_frequencies[word] = word_frequencies.get(word, 0) + 1  
+```
+- **Loop through each sentence** in `sentences`.  
+- **Clean the sentence** by removing **special characters, numbers, and converting to lowercase**.  
+- **Tokenize the cleaned sentence** into words.  
+- **Filter out stopwords** (words like "the", "is", "a").  
+- **Count word frequency**.
+
+---
+
+#### **Step 7: Score Sentences**
+```python
+sentence_scores = {}  
+for sentence in sentences:  
+    for word in word_tokenize(sentence.lower()):  
+        if word in word_frequencies:  
+            sentence_scores[sentence] = sentence_scores.get(sentence, 0) + word_frequencies[word]
+```
+- **Loop through each sentence again.**  
+- **Check each word** in the sentence.  
+- **If the word is important**, add its frequency score to the sentence.  
+
+---
+
+#### **Step 8: Select Top Sentences**
+```python
+summary_sentences = heapq.nlargest(num_sentences, sentence_scores, key=sentence_scores.get)
+summary = ' '.join(summary_sentences)
+```
+- Picks **top-ranked** sentences.
+- **Combines** them into a summary.
+
+---
+
+#### **Step 9: Return the Summary**
+```python
+return summary
+```
+✅ **Returns the final summarized text.**  
+
+---
+
+#### **Step 10: Run the Code with Sample Text**
+```python
+text = """Natural language processing (NLP) is a field of artificial intelligence that focuses on the interaction between computers and humans through natural language.
+It enables machines to understand, interpret, and generate human language in a way that is both meaningful and useful.
+Some common applications of NLP include chatbots, sentiment analysis, and language translation.
+By leveraging NLP techniques, businesses can automate tasks such as summarizing long documents and extracting key information."""
+
+summary = extractive_summarization(text, num_sentences=2)
+print("Summary:", summary)
+```
+- Provides a **sample text**.
+- Generates a summary of **2 key sentences**.
+
+---
+
+### **Example Output**
+```
+Summary: Natural language processing (NLP) is a field of artificial intelligence that focuses on the interaction between computers and humans through natural language.
+Some common applications of NLP include chatbots, sentiment analysis, and language translation.
+```
+✅ **Only the most important sentences are extracted.**  
+
+---
+
+### **Summary of Concepts**
+1. **Tokenization** → Splitting text into sentences/words.  
+2. **Stopword Removal** → Removing common words that don't add meaning.  
+3. **Word Frequency Calculation** → Counting important words.  
+4. **Sentence Scoring** → Assigning scores based on important words.  
+5. **Top Sentence Selection** → Picking key sentences for the summary.  
+
+---
+
+### **Next Steps**
+1. Try summarizing **your own text**.  
+2. Modify `num_sentences` to see different summary lengths.  
+3. Improve sentence scoring using **TF-IDF** or **BERT embeddings** (advanced methods).
+
